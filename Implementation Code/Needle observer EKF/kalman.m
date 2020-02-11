@@ -12,6 +12,8 @@
 u = [0.005;0;0;0]
 c = 1/3
 
+disp('Make up a trajectory');
+
 % Make up a trajectory save all points along the trajectory and
 % measurements into a vector for use later.  This is because it is a test
 % and we dont have an actual system to do this for us.
@@ -21,7 +23,13 @@ trajectory = zeros(9,trajLength);
 measurement = zeros(6,trajLength);
 dT = 1;
 IC = X_IC; % for ode looping
+
+trajLength
+
 for i = 1:trajLength
+    
+    i
+    
     U = u;
     [~,y] = ode45(@(t,x) needleModel(t,x,U,c),[0;dT],IC);
     [P,Hs,B,Jx,Ju] = unpack(y(end,:));
@@ -33,6 +41,8 @@ for i = 1:trajLength
     IC = Xf;
 end
 
+disp('Iterate through all of the measuremnts');
+
 % OK.  Now we have our test measurements...  So we need to iterate through
 % all of the measuremnts using the EKF to estimate the state along the
 % way...
@@ -41,7 +51,12 @@ filterOutput = zeros(9,trajLength);
 X_l = X_IC + randn(9,1)*.1;
 P_l = 0.01*eye(9);
 
+trajLength
+
 for i= 1:trajLength
+    
+    i
+    
     U = u;
     Ym =  measurement(:,i);
     [X_o, P_o] = needleModelekf(Ym, U, X_l, P_l, dT);
@@ -51,6 +66,8 @@ for i= 1:trajLength
     X_l = X_o;
     P_l = P_o;
 end
+
+disp('Plot');
 
 %%
 figure(1)

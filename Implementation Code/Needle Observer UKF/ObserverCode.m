@@ -30,6 +30,8 @@ R=0.01*eye(9); % Noise covariance of process
 Q=diag([.001,.001,.001,.001,.001,.001]); % Noise covariance of observation (measurement)
 mu_treal=[1;3;4;0;1;0;0;1;0]; % Actual initial state vector
 
+disp('Run trajectory generator');
+
 %%  trajectory Generator
 for trajec=1:numt %%iteration for each sigma point
     if (trajec==1)
@@ -44,12 +46,21 @@ for trajec=1:numt %%iteration for each sigma point
     
     real_obv(:,trajec)=observe(state_trajec(1:3,trajec),state_trajec(7:9,trajec)) + Q*randn(6,1);
 end
+
+disp('Weights and Covariance Initialization');
+
 %% weights and Covariance Initialization
 [wt_pt,wt_cov]=sigmaPntCovWt(d);
 covariance(1:9,1:9)= eye(9);
 mu_t(1:9,1) = state_trajec(1:9,1)+randn(9,1);
+
+numt
+
 %% Filter
 for t=2:numt %% iterations for time steps equal to 0.025 seconds
+    
+    t
+    
     %% Sigma Points for each state vector
     sp(1:9,1,1:2*d+1)=sigmapnt(mu_t(1:9,t-1),covariance(1:9,1:9),d);
     
@@ -110,6 +121,8 @@ for t=2:numt %% iterations for time steps equal to 0.025 seconds
     %% Covariance SP of the states
     covariance(:,:)=covariance(1:9,1:9)-K(:,:,t)*InoCov(:,:)*K(:,:,t)';
 end
+
+disp('Make plots');
 
 %% Plots
 muBar_reducedobv(:,:)=muBar_obv(:,1,:);
